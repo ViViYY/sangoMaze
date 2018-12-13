@@ -1,0 +1,290 @@
+****************************************消息格式************************************************
+1、服务端 返回 客户端
+{msg:msg, index:index, data:{err:err, data:{}}}
+
+2、服务端 发送 客户端
+{msg:msg, index:-1, data:{}}
+
+3、客户端 发送 服务端
+{msg:msg, index:index, data:{}}
+
+msg:string,消息类型
+index:int(index>0),消息序号,客户端每次发送消息时+1，收到返回消息时用来寻找暂存的回调方法，服务端返回消息时直接返回index，主动发消息时为-1
+data:json,消息值data:
+	返回结果异常时err = string,异常消息,data = null
+	正常返回时，err = null, data = {}
+
+****************************************消息协议************************************************
+一、服务端 to 客户端
+
+
+二、客户端 to 服务端
+1、心跳协议，间隔时间10s
+	{msg:"alive"}
+	
+2、登录模块
+	2.1 登录:
+	to：{msg:"login", index:index, data:{
+										openid:"", // 微信openid
+										nickname:"", // 微信昵称
+										avatarlUrl:"" // 微信头像链接
+									}
+	}
+	back：{msg:"login", index:index, data:{err:err, data:{
+														gold:int, // 金币
+														diamond:int, // 钻石
+														authority:int, // 威望
+														energy:{ // 精力
+															num:int, // 当前精力值
+															max:int, // 最大精力值
+															time:int // 获得下一点精力的时间戳(s)
+														},
+														time:int, // 服务器时间戳
+														sid:int // 主将id
+														insc:[{ // 铭文数据
+															inscType:int, num:int // 对应铭文类型和数值
+														}],
+														rd:<resData> // 资源数据(数据格式表中的factoryData)
+														arti:[ // 神器数据
+															<artifactData> // 对应数据格式表中的artifactData
+														],
+														medi:[{ // 药剂数据
+															medicamengtType:int, num:int // 对应药剂类型和数值
+														}]
+													}
+									}
+	}
+	
+3、游戏主逻辑模块
+	3.1 资源建筑升级:
+		to:{msg:"res-up", index:index: data:{
+													resType:<resType> // 资源类型(数据类型表中的resType)
+											}
+		}
+		back:{msg:"res-up", index:index, data:{err:err, data:{
+																	resType:<resType>, // 资源类型(数据类型表中的resType)
+																	level:int // 操作后等级
+															}
+											}
+		}
+		3.1.1 铭文合成
+			to:{msg:"insc-combine", index:index: data:{
+														target:<inscType> // 需要合成的铭文(数据类型表中的inscType)
+												}
+			}
+			back:{msg:"insc-combine", index:index, data:{err:err, data:{
+																		insc:[{ // 铭文数据(可以仅是变化的数据)
+																			inscType:int, num:int // 对应铭文类型和数值
+																		}]
+																}
+												}
+			}
+		3.1.2 神器合成
+			to:{msg:"arti-combine", index:index: data:{
+														target:<artifactType> // 需要合成的神器(数据类型表中的artifactType)
+												}
+			}
+			back:{msg:"arti-combine", index:index, data:{err:err, data:{
+																		arti:[ // 神器数据(可以仅是变化的数据)
+																			<artifactData> // 对应数据格式表中的artifactData
+																		],
+																}
+												}
+			}
+		3.1.3 药剂合成
+			to:{msg:"medi-combine", index:index: data:{
+														target:<medicamengtType> // 需要合成的药剂(数据类型表中的medicamengtType)
+												}
+			}
+			back:{msg:"medi-combine", index:index, data:{err:err, data:{
+																		medi:[{ // 药剂数据(可以仅是变化的数据)
+																			medicamengtType:int, num:int // 对应药剂类型和数值
+																		}]
+																}
+												}
+			}
+		
+	3.2 角色数据
+		to:{msg:"role-all", index:index}
+		back:{msg:"role-all", index:index, data:{err:err, data:{
+																	rd:[<roleData>] // 角色数据列表(数据格式表中的roleData)
+															   }
+												}
+		}
+		3.2.1 单个角色数据
+			to:{msg:"role-data", index:index, data:{
+													rid:int // 角色id
+											}
+			}
+			back:{msg:"role-data", index:index, data:{err:err, data:{
+																	rd:roleData // 角色数据(数据格式表中的roleData)
+															   }
+												}
+			}
+		3.2.2 装备铭文
+			to:{msg:"insc-wear", index:index, data:{
+														rid:int, // 角色id
+														et:<inscType> // 铭文类型(数据类型表中的inscType)
+													}
+			}
+			back:{msg:"insc-wear", index:index, data:{err:err, data:{
+																		rd:roleData, // 角色数据(数据格式表中的roleData)
+																		insc:[{ // 铭文数据(可以仅是变化的数据)
+																			inscType:int, num:int // 对应铭文类型和数值
+																		}]
+																	}
+													}
+			}
+		3.2.3 角色升级
+			to:{msg:"role-up", index:index, data:{
+													rid:int // rid:角色id
+												}
+			}
+			back:{msg:"role-up", index:index, data:{err:err, data:{
+																		rd:roleData // rd:数据格式表中的roleData
+																}
+													}
+			}
+		3.2.4 选择主将
+			to:{msg:"role-select", index:index, data:{
+														rid:int // rid:角色id
+													}
+			}
+			back:{msg:"role-select", index:index, data:{err:err, data:{
+																		rid:int // rid:角色id
+																	}
+														}
+			}
+4、战斗模块(msg:battle-)(战斗模块较为复杂，开发过程中优化确定)
+	4.1 选择关卡
+		to:{msg:"battle-map", index:index, data:{
+												mid:int // 关卡id
+											}
+		}
+		back:{msg:"battle-map", index:index, data:{err:err, data:{
+																bd:<battleData> // 玩家的关卡数据(数据格式表中的battleData)
+															}
+											}
+		}
+	4.2 进入迷宫下一层(包含进入关卡 depth = 1)
+		to:{msg:"battle-enter", index:index, data:{
+												mid:int, // 地图id
+												depth:int // depth:层数1,2,3,......
+											}
+		}
+		back:{msg:"battle-enter", index:index, data:{err:err, data:{
+																rbd:roleBattleData, // 角色战斗数据(数据格式表中的roleBattleData)
+																md:<mazeData>, // 该层迷宫数据(数据格式表中的mazeData)
+																re:[<roleEquiptData>], // 角色装备(数据格式表中的roleEquiptData) 
+																rb:[{mazeItemType:int, num:int}], // 角色道具(数据格式表中的mazeItemType) (是否关心背包中的位置？？？)
+																rm:[{mazeMagicType:int, num:int}] // 角色魔法卷轴(数据格式表中的mazeMagicType) 
+															}
+													}
+		}
+	4.3战斗单元格事件
+		4.3.1 // 拾取道具，血包，蓝包
+		to:{msg:"battle-unit-pick", index:index, data:{
+												index:int // 单元格序号(-1:表示自身)
+											}
+		}
+		back:{msg:"battle-unit-pick", index:index, data:{err:err, data:{
+																mud:[<mazeUnitData>], // 单元格数据队列
+																rbd:roleBattleData, // 角色战斗数据(数据格式表中的roleBattleData)(变化时有)
+																rb:[{mazeItemType:int, num:int}] // 角色道具(数据格式表中的mazeItemType)(可以是仅变化的数据) (是否关心背包中的位置？？？)
+															}
+											}
+		}
+		4.3.2 // 普通攻击敌人
+		to:{msg:"battle-attack", index:index, data:{
+												index:int // 单元格序号(-1:表示自身)
+											}
+		}
+		back:{msg:"battle-attack", index:index, data:{err:err, data:{
+																mud:[<mazeUnitData>], // 单元格数据队列
+																rbd:roleBattleData, // 角色战斗数据(数据格式表中的roleBattleData)(变化时有)
+																rb:[{mazeItemType:int, num:int}], // 角色道具(数据格式表中的mazeItemType)(可以是仅变化的数据) (是否关心背包中的位置？？？)
+															}
+											}
+		}
+		4.3.3 // 魔法攻击敌人
+		to:{msg:"battle-magic", index:index, data:{
+												index:int, // 单元格序号(-1:表示自身)
+												magic:mazeMagicType // 使用的魔法卷轴(数据格式表中的mazeMagicType) 
+											}
+		}
+		back:{msg:"battle-magic", index:index, data:{err:err, data:{
+																mud:[<mazeUnitData>], // 单元格数据队列
+																rbd:roleBattleData, // 角色战斗数据(数据格式表中的roleBattleData)(变化时有)
+																rm:[{mazeMagicType:int, num:int}] // 角色魔法卷轴(数据格式表中的mazeMagicType)(可以是仅变化的数据)
+															}
+											}
+		}
+		4.3.4 // 对敌人使用道具
+		to:{msg:"battle-item-enemy", index:index, data:{
+												index:int, // 单元格序号(-1:表示自身)
+												item:mazeItemType // 角色道具(数据格式表中的mazeItemType)
+											}
+		}
+		back:{msg:"battle-item-enemy", index:index, data:{err:err, data:{
+																mud:[<mazeUnitData>], // 单元格数据队列
+																rbd:roleBattleData, // 角色战斗数据(数据格式表中的roleBattleData)(变化时有)
+																rb:[{mazeItemType:int, num:int}], // 角色道具(数据格式表中的mazeItemType)(可以是仅变化的数据) (是否关心背包中的位置？？？)
+															}
+											}
+		}
+	4.4 穿戴/卸下 装备
+	to:{msg:"battle-equipt", index:index, data:{
+											equipt:int, // 装备id
+											type:int // 1、穿上，2、卸下
+										}
+	}
+	back:{msg:"battle-equipt", index:index, data:{err:err, data:{
+																mud:[<mazeUnitData>], // 单元格数据队列(变化时有)
+																rbd:roleBattleData, // 角色战斗数据(数据格式表中的roleBattleData)(变化时有)
+																rb:[{mazeItemType:int, num:int}] // 角色道具(数据格式表中的mazeItemType)(可以是仅变化的数据) (是否关心背包中的位置？？？)
+																re:[<roleEquiptData>], // 角色装备(数据格式表中的roleEquiptData) (可以是仅变化的数据)
+														}
+											}
+	}
+	4.5 分解装备
+	to:{msg:"battle-equipt-deco", index:index, data:{
+											equipt:int, // 装备id
+										}
+	}
+	back:{msg:"battle-equipt-deco", index:index, data:{err:err, data:{
+																rbd:roleBattleData, // 角色战斗数据(数据格式表中的roleBattleData)(变化时有)
+																rb:[{mazeItemType:int, num:int}] // 角色道具(数据格式表中的mazeItemType)(可以是仅变化的数据) (是否关心背包中的位置？？？)
+																re:[<roleEquiptData>], // 角色装备(数据格式表中的roleEquiptData) (可以是仅变化的数据)
+														}
+											}
+	}
+	4.6 战斗结束(主动结束战斗)，总结数据
+	to:{msg:"battle-over", index:index, data:{
+											
+										}
+	}
+	back:{msg:"battle-over", index:index, data:{err:err, data:{
+																depth:int, // 层数
+																gold:int, // 金币奖励
+																diamond:int, // 钻石奖励
+																item:[t:<resType>, n:int], // 资源奖励数量
+																insc:[t:inscType, n:int], // 铭文奖励数量
+														}
+											}
+	}
+
+****************************************消息加密************************************************
+
+
+
+
+
+
+
+
+
+
+
+
+
+

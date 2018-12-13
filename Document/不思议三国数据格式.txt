@@ -1,0 +1,70 @@
+1、roleData:{ // 角色数据类型
+	id:int, // 配置id
+	weapon:int, // 武器
+	armor:int, // 防具
+	attack:int, // 攻击
+	magic:int, // 魔力
+	hp:int, // 生命值
+	mp:int, // 魔法值
+	insc:string, // 铭文
+	skill:int, // 技能
+	lock:boolean, //锁定
+}
+2、resData:{ // 资源数据类型
+	res:{
+		gold:int, // 金币
+		iron:int, // 磨铁
+		crystal:int, // 水晶
+		steel:int, // 暗钢
+		soulCrystal:int, // 魂晶
+		mithril:int, // 秘银
+		olyCrystal:int, // 奥晶
+		conGold:int, // 恒金
+		holyCrystal:int, // 圣晶
+	},
+	build:{
+		gold:int, // 金币等级
+		iron:int, // 磨铁等级
+		crystal:int, // 水晶等级
+		steel:int, // 暗钢等级
+		soulCrystal:int, // 魂晶等级
+		mithril:int, // 秘银等级
+		olyCrystal:int, // 奥晶等级
+		conGold:int, // 恒金等级
+		holyCrystal:int, // 圣晶等级
+	},
+}
+3、artifactData = { // 神器数据
+	artifactType:int, // 神器类型(artifactType)
+	max:int, // 最大使用次数
+	num:int, // 剩余次数
+}
+100、battleData:{ // 关卡数据
+	id:int, // 配置id
+	target:{ // 关卡任务进度
+		
+	},
+	step:int, // 当前推图进程，1，2，3，。。。。。 0：表示开启无限模式
+	r1:int, // 灵魂连接记录1
+	r2:int, // 灵魂连接记录2
+	
+}
+101、mazeData:{ // 迷宫单层数据，位置pos解析,pos = 3 -> (x:3, y:0), pos = 16 -> (x:1, y:3), [x = pos % 5, y = pos / 5]  
+	mud:[<mazeUnitData>], // 单元格数据队列
+}
+102、mazeUnitData:{ // 单元格数据
+	<mazeUnitType>:int, // 单元格类型(数据类型表)
+	p1:int, // 参数1
+	p2:int, // 参数2
+	p3:int, // 参数3
+}
+103、roleEquiptData:{ // 角色装备数据
+	
+}
+104、roleBattleData:{ // 角色战斗数据
+	attack:int, // 攻击
+	magic:int, // 魔力
+	hp:int, // 生命值
+	mp:int, // 魔法值
+	point:int, //  探险点
+}

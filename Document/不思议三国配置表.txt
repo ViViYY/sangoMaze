@@ -1,0 +1,110 @@
+1、角色表:
+maze_role
+{
+	id:int, // 配置id
+	rname:string, // 角色名称
+	avatarUrl:string, // 头像url
+	bodyUrl:string, // 身像url
+	animUrl:String, // 动画url
+	desc:string, // 角色描述
+	type:int, // 类型(1:我方角色, 2:友军, 3:敌军, 4:boss)
+	level:int, // 等级
+	nextId:int, // 下一级
+	weapon:int, // 武器
+	armor:int, // 防具
+	attack:int, // 攻击
+	magic:int, // 魔力
+	hp:int, // 生命值
+	mp:int, // 魔法值
+	skill:int, // 技能
+	occu:int, // 职业(1:冒险系, 2:战斗系, 3:魔法系)
+	camp:int, // 阵营(1:蜀, 2:魏, 3:吴, 4:群雄)
+	insc1:int, // 铭文1
+	insc2:int, // 铭文2
+	insc3:int, // 铭文3
+	insc4:int, // 铭文4
+	insc5:int, // 铭文5
+	insc6:int, // 铭文6
+}
+
+2、关卡总表
+maze_battle
+{
+	id:int, // 配置id
+	bname:string, // 关卡名称
+	desc:string, // 关卡描述
+	pre:int, // 前置关卡
+	texture:int, // 纹理集序号
+	x:int, // x坐标
+	y:int, // y坐标
+}
+
+3、关卡配置表
+maze_battle_config
+{
+	id:int, // 配置id
+	
+}
+
+4、食谱表
+maze_food
+{
+	id:int, // 配置id
+	
+}
+
+5、装备表
+maze_equipt
+{
+	id:int, // 配置id
+	
+}
+
+6、道具表
+maze_item
+{
+	id:int, // 配置id
+	
+}
+
+7、神器表
+maze_artifact
+{
+	id:int, // 配置id
+	
+}
+
+8、药剂表
+maze_medicament
+{
+	id:int, // 配置id
+	
+}
+
+9、威望奖励表
+maze_authority
+{
+	id:int, // 配置id
+	
+}
+
+10、战斗技能表
+maze_skill
+{
+	id:int, // 配置id
+	
+}
+
+11、角色魔法表
+maze_magic
+{
+	id:int, // 配置id
+	
+}
+
+12、资源矿表
+maze_res
+{
+	id:int, // 配置id
+	
+}

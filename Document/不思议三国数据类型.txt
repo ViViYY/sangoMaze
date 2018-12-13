@@ -1,0 +1,70 @@
+1、资源类型:
+resType = {
+	"gold" : 10000, 			// 金币
+	"iron" : 10001, 			// 磨铁
+	"crystal" : 10002, 			// 水晶
+	"steel" : 10003, 			// 暗钢
+	"soulCrystal" : 10004, 		// 魂晶
+	"mithril" : 10005, 			// 秘银
+	"olyCrystal" : 10006, 		// 奥晶
+	"conGold" : 10007, 			// 恒金
+	"holyCrystal" : 10008, 		// 圣晶
+}
+2、铭文类型
+inscType = {
+	
+}
+3、装备类型
+equiptType = {
+	"helmet" : 20000,			// 头盔
+	"neckless" : 20000,			// 项链
+	"helmet" : 20000,			// 胸甲
+	"helmet" : 20000,			// 腰带
+	"helmet" : 20000,			// 护腿
+	"helmet" : 20000,			// 鞋子
+	"helmet" : 20000,			// 护肩
+	"helmet" : 20000,			// 手套
+	"helmet" : 20000,			// 戒指
+	"weapon" : 20000,			// 主武器
+	"helmet" : 20000,			// 副武器
+}
+4、神器类型
+artifactType = {
+
+}
+5、药剂类型
+medicamengtType = {
+
+}
+100、迷宫单元类型
+mazeUnitType = {
+	"enemy" : 30000,			// 敌人	
+	"award" : 30001,			// 奖励	
+	"key" : 30002,				// 钥匙
+	"boss" : 30003,				// boss
+	"enter" : 30004, 			// 入口
+}
+101、迷宫动作类型
+mazeActionType = {
+	"pick" : 40000,				// 捡起物品
+	"attack" : 40001,			// 普通攻击
+	"magic" : 40002,			// 魔法攻击
+	"debuff" : 40003,			// 使用debuff
+	"buff" : 40004,				// 使用buff
+}
+102、迷宫动作结果类型
+mazeActionResultType = {
+	"getItem" : 50000,			// 获得物品
+	"redItem" : 50000,			// 消耗物品
+	"enemy" : 50001,			// enemy状态
+	"debuff" : 50002,			// debuff
+	"buff" : 50003,				// buff
+}
+103、战斗道具类型
+mazeItemType = {
+
+}
+104、战斗魔法卷轴类型
+mazeMagicType = {
+
+}
